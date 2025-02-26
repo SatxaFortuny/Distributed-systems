@@ -3,23 +3,25 @@ import Pyro4
 
 @Pyro4.expose
 @Pyro4.behavior(instance_mode="single")
-class ObservableServer(object):
-
-    observers = []
+class ObservableServer:
     
-    def register(self, observer):
-        self.observers.append(Pyro4.Proxy("PYRONAME:"+observer))
-        print(observer+" registered")
-        return observer+" registered"
+    def __init__(self):
+        self.observers = []
 
-    def unregister(self, observer):
+    def registerObserver(self, observer):
+        self.observers.append(observer)
+        print("observer registered")
+        return "observer registered"
+
+    def unregisterObserver(self, observer):
         self.observers.remove(Pyro4.Proxy("PYRONAME:"+observer))
-        print(observer+" unregistered")
-        return observer+" unregistered"
+        print("server unregistered")
+        return "server unregistered"
 
     def notifyAllObservers(self, name):
         for observer in self.observers:
-            print(f"Observer: {observer} | {observer.notify(name)}")
+            obsvr = Pyro4.Proxy(observer)
+            print(f"Observer: {observer} | {obsvr.notify(name)}")
         return "All observers notified"
 
 daemon = Pyro4.Daemon() # make a Pyro daemon
