@@ -16,5 +16,6 @@ serveruri = ns.lookup("example.observable")
 server = Pyro4.Proxy(serveruri)
 uri = daemon.register(ObServer) # register the greeting maker as a Pyro object
 print(server.registerObserver(str(uri)))
+print(server._pyroMethods)
 print("Ready.")
 daemon.requestLoop() # start the event loop of the server to wait for
